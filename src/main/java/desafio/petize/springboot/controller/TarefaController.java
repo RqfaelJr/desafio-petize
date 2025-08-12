@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,7 +46,10 @@ public class TarefaController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<DadosListagemTarefa>> filtrar(@RequestParam(required = false) Status status, @RequestParam(required = false) Prioridade prioridade, @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataVencimento, Pageable pageable) {
+    public ResponseEntity<Page<DadosListagemTarefa>> filtrar(@RequestParam(required = false) Status status,
+                                                             @RequestParam(required = false) Prioridade prioridade,
+                                                             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataVencimento,
+                                                             @PageableDefault(size = 5, sort = "dataVencimento") Pageable pageable) {
         var page = tarefaService.filtrar(status, prioridade, dataVencimento, pageable);
         return ResponseEntity.ok(page);
     }

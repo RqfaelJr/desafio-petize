@@ -1,9 +1,11 @@
 package desafio.petize.springboot.service;
 
+import desafio.petize.springboot.domain.specification.TarefaSpecification;
 import desafio.petize.springboot.domain.tarefa.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -36,11 +38,27 @@ public class TarefaService {
 
     public void deletar(Long id) {
         var tarefa = buscar(id);
+        deletarSubtarefas(tarefa);
+    }
+
+    private void deletarSubtarefas(Tarefa tarefa) {
         tarefa.setStatus(Status.DELETADO);
+
+        if (tarefa.getSubtarefas() != null) {
+            for (Tarefa subtarefa : tarefa.getSubtarefas()) {
+                deletarSubtarefas(subtarefa);
+            }
+        }
     }
 
     public Page<DadosListagemTarefa> filtrar(Status status, Prioridade prioridade, LocalDate dataVencimento, Pageable pageable) {
-        return tarefaRepository.findByFiltros(status, prioridade, dataVencimento, pageable);
+        Specification<Tarefa> specification = Specification.where(TarefaSpecification.naoDeletado())
+                .and((TarefaSpecification.comStatus(status)))
+                .and(TarefaSpecification.comPrioridade(prioridade))
+                .and(TarefaSpecification.comDataVencimento(dataVencimento));
+        var page = tarefaRepository.findAll(specification, pageable);
+
+        return page.map(DadosListagemTarefa::new);
     }
 
     public DadosDetalhamentoTarefa adicionarSubtarefa(Long id, DadosCadastroTarefa dados) {
@@ -53,6 +71,6 @@ public class TarefaService {
     }
 
     private Tarefa buscar(Long id) {
-        return tarefaRepository.findById(id).orElseThrow(() -> new RuntimeException("Tarefa não encontrada"));
+        return tarefaRepository.findByIdAndStatusNot(id, Status.DELETADO).orElseThrow(() -> new RuntimeException("Tarefa não encontrada"));
     }
 }

@@ -1,11 +1,14 @@
 package desafio.petize.springboot.domain.tarefa;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -23,7 +26,7 @@ public class Tarefa {
 
     private String descricao;
 
-    private Date dataVencimento;
+    private LocalDate dataVencimento;
 
     @Setter
     @Enumerated(EnumType.STRING)
@@ -35,9 +38,11 @@ public class Tarefa {
     @Setter
     @ManyToOne
     @JoinColumn(name = "tarefa_pai_id")
+    @JsonBackReference
     private Tarefa tarefaPai;
 
     @OneToMany(mappedBy = "tarefaPai", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Tarefa> subtarefas = new ArrayList<>();
 
     public Tarefa(DadosCadastroTarefa dados) {

@@ -1,9 +1,11 @@
 package desafio.petize.springboot.domain.tarefa;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public record DadosCadastroTarefa(
 
@@ -14,13 +16,14 @@ public record DadosCadastroTarefa(
         String descricao,
 
         @Future(message = "A data de vencimento não pode ser no passado!")
-        @NotBlank(message = "O campo data de vencimento não pode estar em branco!")
-        Date dataVencimento,
+        @NotNull(message = "O campo data de vencimento não pode estar em branco!")
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+        LocalDate dataVencimento,
 
-        @NotBlank(message = "O campo status não pode estar em branco!")
+        @NotNull(message = "O campo status não pode estar em branco!")
         Status status,
 
-        @NotBlank(message = "O campo prioridade não pode estar em branco!")
+        @NotNull(message = "O campo prioridade não pode estar em branco!")
         Prioridade prioridade
 ) {
 }
