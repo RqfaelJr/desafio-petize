@@ -21,10 +21,7 @@ public class TarefaService {
     }
 
     public DadosDetalhamentoTarefa atualizar(DadosAtualizacaoTarefa dados) {
-        var tarefa = tarefaRepository.findById(dados.id()).orElse(null);
-        if (tarefa == null || tarefa.getStatus() == Status.DELETADO) {
-            throw new TarefaNaoEncontradaException("A tarefa não foi encontrada");
-        }
+        var tarefa = buscar(dados.id());
 
         if (dados.status() == Status.CONCLUIDO) {
             boolean pendentes = tarefa.getSubtarefas().stream().anyMatch(status -> !(Status.CONCLUIDO == status.getStatus()));
@@ -38,10 +35,7 @@ public class TarefaService {
     }
 
     public void deletar(Long id) {
-        var tarefa = tarefaRepository.findById(id).orElse(null);
-        if (tarefa == null) {
-            throw new TarefaNaoEncontradaException("A tarefa não foi encontrada");
-        }
+        var tarefa = buscar(id);
         tarefa.setStatus(Status.DELETADO);
     }
 
@@ -50,11 +44,15 @@ public class TarefaService {
     }
 
     public DadosDetalhamentoTarefa adicionarSubtarefa(Long id, DadosCadastroTarefa dados) {
-        Tarefa tarefaPai = tarefaRepository.findById(id).orElseThrow(() -> new RuntimeException("Tarefa pai não encontrada"));
+        Tarefa tarefaPai = buscar(id);
         Tarefa subtarefa = new Tarefa(dados);
         subtarefa.setTarefaPai(tarefaPai);
         tarefaRepository.save(subtarefa);
 
         return new DadosDetalhamentoTarefa(subtarefa);
+    }
+
+    private Tarefa buscar(Long id) {
+        return tarefaRepository.findById(id).orElseThrow(() -> new RuntimeException("Tarefa não encontrada"));
     }
 }
