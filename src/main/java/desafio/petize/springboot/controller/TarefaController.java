@@ -4,6 +4,7 @@ import desafio.petize.springboot.domain.tarefa.*;
 import desafio.petize.springboot.service.TarefaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,6 +20,7 @@ import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/tarefa")
+@SecurityRequirement(name = "bearer-key")
 public class TarefaController {
 
     @Autowired

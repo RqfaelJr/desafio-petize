@@ -2,15 +2,14 @@ package desafio.petize.springboot.domain.tarefa;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import desafio.petize.springboot.domain.usuario.Usuario;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -37,13 +36,17 @@ public class Tarefa {
 
     @Setter
     @ManyToOne
-    @JoinColumn(name = "tarefa_pai_id")
+    @JoinColumn(name = "idTarefaPai")
     @JsonBackReference
     private Tarefa tarefaPai;
 
     @OneToMany(mappedBy = "tarefaPai", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Tarefa> subtarefas = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idUsuario")
+    private Usuario usuario;
 
     public Tarefa(DadosCadastroTarefa dados) {
         this.titulo = dados.titulo();
