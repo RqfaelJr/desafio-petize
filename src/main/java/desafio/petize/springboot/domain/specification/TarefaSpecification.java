@@ -9,6 +9,11 @@ import java.time.LocalDate;
 
 public class TarefaSpecification {
 
+    public static Specification<Tarefa> doUsuario(Long id) {
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get("usuario").get("id"), id);
+    }
+
     public static Specification<Tarefa> naoDeletado() {
         return (root, query, cb) -> cb.notEqual(root.get("status"), Status.DELETADO);
     }

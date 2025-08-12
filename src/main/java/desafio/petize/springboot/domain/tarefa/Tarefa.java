@@ -46,6 +46,7 @@ public class Tarefa {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idUsuario")
+    @Setter
     private Usuario usuario;
 
     public Tarefa(DadosCadastroTarefa dados) {

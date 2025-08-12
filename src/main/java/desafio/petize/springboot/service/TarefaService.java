@@ -2,10 +2,12 @@ package desafio.petize.springboot.service;
 
 import desafio.petize.springboot.domain.specification.TarefaSpecification;
 import desafio.petize.springboot.domain.tarefa.*;
+import desafio.petize.springboot.domain.usuario.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -17,7 +19,9 @@ public class TarefaService {
     private TarefaRepository tarefaRepository;
 
     public DadosDetalhamentoTarefa adicionar(DadosCadastroTarefa dados) {
+        var usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Tarefa tarefa = new Tarefa(dados);
+        tarefa.setUsuario(usuario);
         tarefaRepository.save(tarefa);
         return new DadosDetalhamentoTarefa(tarefa);
     }
@@ -52,7 +56,11 @@ public class TarefaService {
     }
 
     public Page<DadosListagemTarefa> filtrar(Status status, Prioridade prioridade, LocalDate dataVencimento, Pageable pageable) {
-        Specification<Tarefa> specification = Specification.where(TarefaSpecification.naoDeletado())
+
+        var usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        Specification<Tarefa> specification = Specification.where(TarefaSpecification.doUsuario(usuario.getId()))
+                .and(TarefaSpecification.naoDeletado())
                 .and((TarefaSpecification.comStatus(status)))
                 .and(TarefaSpecification.comPrioridade(prioridade))
                 .and(TarefaSpecification.comDataVencimento(dataVencimento));
