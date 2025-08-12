@@ -49,4 +49,14 @@ public class TarefaController {
         var page = tarefaService.filtrar(status, prioridade, dataVencimento, pageable);
         return ResponseEntity.ok(page);
     }
+
+    @PostMapping("/{id}/subtarefa")
+    @Transactional
+    public ResponseEntity<DadosDetalhamentoTarefa> adicionarSubtarefa(@PathVariable Long id, @RequestBody @Valid DadosCadastroTarefa dados, UriComponentsBuilder uriBuilder) {
+        var dto = tarefaService.adicionarSubtarefa(id, dados);
+
+        var uri = uriBuilder.path("/{id}").buildAndExpand(dto.id()).toUri();
+
+        return ResponseEntity.created(uri).body(dto);
+    }
 }

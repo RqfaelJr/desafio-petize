@@ -6,7 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Getter
@@ -29,6 +31,14 @@ public class Tarefa {
 
     @Enumerated(EnumType.STRING)
     private Prioridade prioridade;
+
+    @Setter
+    @ManyToOne
+    @JoinColumn(name = "tarefa_pai_id")
+    private Tarefa tarefaPai;
+
+    @OneToMany(mappedBy = "tarefaPai", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Tarefa> subtarefas = new ArrayList<>();
 
     public Tarefa(DadosCadastroTarefa dados) {
         this.titulo = dados.titulo();
