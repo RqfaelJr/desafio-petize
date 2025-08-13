@@ -17,6 +17,7 @@ Uma API Restful para gerenciamento de tarefas do desafio técnico da Petize.
 
 - Docker e Docker Compose instalados na máquina.
 - (Opcional) Postman ou outro cliente HTTP para testar a API.
+- Maven instalado para testes.
 
 ---
 
@@ -48,7 +49,12 @@ http://localhost:8080/swagger-ui/index.html#/
 - Associação de tarefas ao usuário autenticado. ✅ 
 - Validação de entrada usando `@Valid` com mensagens claras. ✅ 
 - Documentação completa com Swagger. ✅ 
-- Testes unitários e de integração. ⚠️
+- Testes unitários e de integração. ✅
 - Docker Compose configurado com banco de dados. ✅ 
 - Paginação, ordenação e upload de anexos. ⚠️
 
+## Testes
+
+```
+mvn teste
+```
