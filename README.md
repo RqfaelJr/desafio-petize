@@ -51,4 +51,4 @@ http://localhost:8080/swagger-ui/index.html#/
 - Testes unitários e de integração. ⚠️
 - Docker Compose configurado com banco de dados. ✅ 
 - Paginação, ordenação e upload de anexos. ⚠️
-```
+
