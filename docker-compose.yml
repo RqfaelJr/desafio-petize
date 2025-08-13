@@ -1,0 +1,28 @@
+version: '3.9'
+
+services:
+    app:
+        build: .
+        container_name: desafio-petize
+        ports:
+            - "8080:8080"
+        environment:
+            SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/desafio-petize
+            SPRING_DATASOURCE_USERNAME: postgres
+            SPRING_DATASOURCE_PASSWORD: 123
+            SPRING_JPA_HIBERNATE_DDL_AUTO: update
+        depends_on:
+            - db
+    db:
+        image: postgres:16
+        container_name: postgres_desafio
+        ports:
+            - "5433:5432"
+        environment:
+            POSTGRES_DB: desafio-petize
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: 123
+        volumes:
+            - pgdata:/var/lib/postgresql/data
+volumes:
+    pgdata:
